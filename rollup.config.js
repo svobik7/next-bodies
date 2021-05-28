@@ -1,0 +1,30 @@
+import { terser } from 'rollup-plugin-terser'
+import typescript from 'rollup-plugin-ts'
+import pkg from './package.json'
+
+// external dependencies will not be included in bundle
+const external = [
+  ...Object.keys(pkg.dependencies || {}),
+  ...Object.keys(pkg.peerDependencies || {}),
+  'next/app',
+  'react',
+]
+
+export default [
+  {
+    input: ['src/index.tsx'],
+    output: {
+      dir: 'dist',
+      format: 'cjs',
+      exports: 'named',
+    },
+    // preserveModules: true,
+    plugins: [
+      typescript({
+        typescript: require('typescript'),
+      }),
+      terser(), // minifies generated bundles
+    ],
+    external: external,
+  },
+]
