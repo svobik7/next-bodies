@@ -6,8 +6,6 @@ import pkg from './package.json'
 const external = [
   ...Object.keys(pkg.dependencies || {}),
   ...Object.keys(pkg.peerDependencies || {}),
-  'next/app',
-  'react',
 ]
 
 export default [
@@ -23,7 +21,7 @@ export default [
       typescript({
         typescript: require('typescript'),
       }),
-      terser(), // minifies generated bundles
+      terser({ format: { comments: false } }), // minifies generated bundles
     ],
     external: external,
   },
