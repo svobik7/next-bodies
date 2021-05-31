@@ -1,0 +1,40 @@
+@use 'styles/colors' as colors;
+
+.root {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.body {
+  max-width: 640px;
+  background: #fff;
+  padding: 16px 32px;
+  border: 4px solid colors.$dialog;
+  padding: 16px 16px;
+}
+
+.blockTop {
+  color: colors.$dialog;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+}
+
+.blockBottom {
+  border-top: 1px solid #ccc;
+  margin-top: 24px;
+  padding-top: 24px;
+}
+
+.btnClose {
+  cursor: pointer;
+  color: colors.$dialog;
+}

@@ -1,13 +1,12 @@
 import { ReactNode } from 'react'
-import classes from 'styles/pages/index.module.scss'
 import Layout from '../components/layout/layout'
+import classes from 'styles/pages/about.module.scss'
 
-const IndexPage = () => {
-  console.count('Rendering INDEX')
-
+const AboutPage = () => {
+  console.count('Rendering ABOUT')
   return (
     <div className={classes.root}>
-      <h1>Index Body</h1>
+      <h1>About Body</h1>
       <p>
         This body component is always rendered as `mainBody` wrapped in layout
         component. It is never rendered in dialog because this example strictly
@@ -22,8 +21,8 @@ const IndexPage = () => {
   )
 }
 
-IndexPage.getLayout = function getLayout(page: ReactNode) {
+AboutPage.getLayout = function getLayout(page: ReactNode) {
   return <Layout>{page}</Layout>
 }
 
-export default IndexPage
+export default AboutPage

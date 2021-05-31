@@ -11,7 +11,8 @@
     "next": "^10.2.3",
     "next-bodies": "link:../",
     "react": "link:../node_modules/react",
-    "react-dom": "link:../node_modules/react-dom"
+    "react-dom": "link:../node_modules/react-dom",
+    "sass": "^1.34.0"
   },
   "devDependencies": {
     "@types/node": "^12.12.21",
