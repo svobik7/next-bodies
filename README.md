@@ -2,7 +2,7 @@
 
 Next.js utility for rendering multiple page components at once based on router pathname while keeping the layout stale.
 
-The most common use case would be to render the next (slave) page in an overlay (dialog) while keeping the current (main) page unchanged and visible once the user clicks the page link.
+The most common use case would be to render the next (slave) page in an overlay (modal, dialog) while keeping the current (main) page unchanged and visible once the user clicks the page link.
 
 Each page component can specify a custom layout in which the page will be wrapped when rendered as the main page.
 
