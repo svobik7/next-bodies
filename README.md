@@ -1,6 +1,6 @@
 # next-bodies
 
-Next.js utility for rendering multiple page components at once based on router pathname while keeping the layout stale.
+Next.js utility for rendering multiple page components at once based on router pathname while keeping the layout stale. This behavior is also know as contextual modal routing.
 
 The most common use case would be to render the next (slave) page in an overlay (modal, dialog) while keeping the current (main) page unchanged and visible once the user clicks the page link.
 
@@ -17,6 +17,8 @@ Using the `next-bodies` approach for orchestrate page dialogs includes:
 3. No unnecessary re-renders of the main page when router pathname did not change
 4. No need to manual opening the overlays - overlays are opened based on router change
 5. No need to manual removing the layout when rendering the page in a dialog
+
+> Next.js says: On many popular social media, opening a post will update the URL but won't trigger a navigation and will instead display the content inside a modal. This behavior ensures the user won't lose the current UI context (scroll position). The URL still reflect the post's actual page location and any refresh will bring the user there. This behavior ensures great UX without neglecting SEO.
 
 ## 1. Getting started
 
