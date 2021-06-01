@@ -15,7 +15,7 @@
   "private": false,
   "scripts": {
     "prepublish": "yarn clean && yarn build",
-    "build": "rollup -c",
+    "build": "yarn rollup -c",
     "clean": "rm -rf dist > /dev/null",
     "format": "pretty-quick",
     "test": "jest",
