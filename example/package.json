@@ -2,7 +2,7 @@
   "name": "with-typescript",
   "version": "1.0.0",
   "scripts": {
-    "prepare": "cd .. && yarn build && cd ./example",
+    "prepare": "cd .. && yarn install && yarn clean && yarn build && cd ./example",
     "dev": "yarn prepare && next",
     "build": "yarn prepare && next build",
     "start": "next start",
