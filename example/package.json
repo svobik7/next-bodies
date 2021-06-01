@@ -2,8 +2,9 @@
   "name": "with-typescript",
   "version": "1.0.0",
   "scripts": {
-    "dev": "next",
-    "build": "next build",
+    "prepare": "cd .. && yarn build && cd ./example",
+    "dev": "yarn prepare && next",
+    "build": "yarn prepare && next build",
     "start": "next start",
     "type-check": "tsc"
   },
