@@ -2,83 +2,224 @@ import { renderHook } from '@testing-library/react-hooks'
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17'
 import Enzyme from 'enzyme'
 import React from 'react'
-import { AppWithBodiesProps, useBodies } from '../src'
+import { BodiesProps, createBodiesProps, useBodies } from '../src'
 
 Enzyme.configure({ adapter: new Adapter() })
 
 describe('next-bodies', () => {
   /**
-   * Test 'useBodies' hook
-   * ---
-   * It should creates links based on current roots context
+   * Should create properly configured main and slave bodies component
    */
   describe('useBodies', () => {
-    test('test mainBody', () => {
-      const props: AppWithBodiesProps = {
+    test('expect mainBody to be rendered and slaveBody to be null', () => {
+      const props: BodiesProps = {
         Component: function Body() {
-          return <div>Main</div>
+          return <div>Main text</div>
         },
-        // @ts-ignore only asPath and isFallback is used in useBodies
-        router: {
-          asPath: '/',
-          isFallback: false,
-        },
+        currentPath: '/',
+        isFallback: false,
         pageProps: {},
       }
 
-      const { result } = renderHook(() => useBodies(props, false))
+      const hook = renderHook(() => useBodies(props, false))
 
-      expect(result.current.useSlave).toBeFalsy()
-      expect(result.current.slaveBody).toBeNull()
-      expect(
-        Enzyme.shallow(result.current.mainBody).contains('Main'),
-      ).toBeTruthy()
+      expect(hook.result.current.mainBody).not.toBeNull()
+      expect(hook.result.current.slaveBody).toBeNull()
+      expect(hook.result.current.useSlave).toBeFalsy()
+
+      const mainBody = Enzyme.shallow(hook.result.current.mainBody)
+      expect(mainBody.text()).toBe('Main text')
     })
 
-    test('test slaveBody', () => {
-      const propsMain: AppWithBodiesProps = {
+    test('expect mainBody to re-renders only once when currentPath is not changed', (done) => {
+      const firstProps: BodiesProps = {
+        Component: function Body({ ts }: { ts: number }) {
+          return <div>Main timestamp: {ts}</div>
+        },
+        currentPath: '/',
+        isFallback: false,
+        pageProps: {
+          ts: 1,
+        },
+      }
+
+      const secondProps: BodiesProps = {
+        ...firstProps,
+        pageProps: {
+          ts: 2,
+        },
+      }
+
+      const hook = renderHook((props) => useBodies(props, false), {
+        initialProps: firstProps,
+      })
+
+      expect(hook.result.current.mainBody).not.toBeNull()
+
+      const mainBody = Enzyme.shallow(hook.result.current.mainBody)
+      expect(mainBody.text()).toBe('Main timestamp: 1')
+
+      hook.waitForNextUpdate().then(() => {
+        const nextMainBody = Enzyme.shallow(hook.result.current.mainBody)
+        expect(nextMainBody.text()).toBe('Main timestamp: 1')
+        done()
+      })
+
+      hook.rerender(secondProps)
+    })
+
+    test('expect slaveBody to be rendered properly', (done) => {
+      const mainProps: BodiesProps = {
         Component: function MainBody() {
-          return <div>Main</div>
+          return <div>Main text</div>
         },
-        // @ts-ignore only asPath and isFallback is used in useBodies
-        router: {
-          asPath: '/',
-          isFallback: false,
-        },
+        currentPath: '/',
+        isFallback: false,
         pageProps: {},
       }
 
-      const propsSlave: AppWithBodiesProps = {
+      const slaveProps: BodiesProps = {
         Component: function SlaveBody() {
-          return <div>Slave</div>
+          return <div>Slave text</div>
         },
-        // @ts-ignore only asPath and isFallback is used in useBodies
-        router: {
-          asPath: '/modal-route',
-          isFallback: false,
-        },
+        currentPath: '/detail',
+        isFallback: false,
         pageProps: {},
       }
 
-      // const { result } = renderHook(() => {
-      //   useBodies(propsMain, false)
-      //   return useBodies(propsSlave, true)
-      // })
-
-      const { result, rerender } = renderHook(
-        ({ props = propsMain, renderAsSlave = false }) =>
-          useBodies(props, renderAsSlave),
+      const hook = renderHook(
+        ({ props, renderAsSlave }) => useBodies(props, renderAsSlave),
+        {
+          initialProps: {
+            props: mainProps,
+            renderAsSlave: false,
+          },
+        },
       )
 
-      rerender({ props: propsSlave, renderAsSlave: true })
+      expect(hook.result.current.slaveBody).toBeNull()
+      expect(hook.result.current.useSlave).toBeFalsy()
 
-      console.log(result.all)
+      hook.waitForNextUpdate().then(() => {
+        expect(hook.result.current.slaveBody).not.toBeNull()
+        expect(hook.result.current.useSlave).toBeTruthy()
 
-      // expect(r2.current.useSlave).toBeTruthy()
-      // expect(
-      //   Enzyme.shallow(r2.current.slaveBody).contains('Slave'),
-      // ).toBeTruthy()
-      // expect(Enzyme.shallow(r2.current.mainBody).contains('Main')).toBeTruthy()
+        const nextSlaveBody = Enzyme.shallow(hook.result.current.slaveBody)
+        expect(nextSlaveBody.text()).toBe('Slave text')
+
+        done()
+      })
+
+      hook.rerender({ props: slaveProps, renderAsSlave: true })
+    })
+
+    test('expect mainBody to be hydrated properly', (done) => {
+      const notHydratedProps: BodiesProps = {
+        Component: function Body({ ts }: { ts: number }) {
+          return <div>Main timestamp: {ts || 0}</div>
+        },
+        currentPath: '/[slug]',
+        isFallback: true,
+        pageProps: {},
+      }
+
+      const alreadyHydratedProps: BodiesProps = {
+        ...notHydratedProps,
+        currentPath: '/detail-slug',
+        isFallback: false,
+        pageProps: {
+          ts: 100,
+        },
+      }
+
+      const hook = renderHook((props) => useBodies(props, false), {
+        initialProps: notHydratedProps,
+      })
+
+      expect(hook.result.current.mainBody).not.toBeNull()
+
+      const mainBody = Enzyme.shallow(hook.result.current.mainBody)
+      expect(mainBody.text()).toBe('Main timestamp: 0')
+
+      hook.waitForNextUpdate().then(() => {
+        const nextMainBody = Enzyme.shallow(hook.result.current.mainBody)
+        expect(nextMainBody.text()).toBe('Main timestamp: 100')
+
+        done()
+      })
+
+      hook.rerender(alreadyHydratedProps)
+    })
+
+    test('expect slaveBody cache is cleared after fallback is done', (done) => {
+      const mainProps: BodiesProps = {
+        Component: function Body() {
+          return <div>Main text</div>
+        },
+        currentPath: '/main-slug',
+        isFallback: false,
+        pageProps: {},
+      }
+
+      const slaveProps: BodiesProps = {
+        Component: function Body() {
+          return <div>Slave text</div>
+        },
+        currentPath: '/slave-slug',
+        isFallback: false,
+        pageProps: {},
+      }
+
+      const hook = renderHook(
+        ({ props, renderAsSlave }) => useBodies(props, renderAsSlave),
+        {
+          initialProps: { props: mainProps, renderAsSlave: false },
+        },
+      )
+
+      hook.rerender({ props: slaveProps, renderAsSlave: true })
+
+      hook.waitForNextUpdate().then(() => {
+        expect(hook.result.current.mainBody).not.toBeNull()
+        done()
+      })
+
+      hook.rerender({
+        props: { ...slaveProps, isFallback: true },
+        renderAsSlave: true,
+      })
+    })
+  })
+  /**
+   * Should create bodies props properly from app props
+   */
+  describe('createBodiesProps', () => {
+    test('expect createBodiesProps to adapt given AppProps properly', () => {
+      const inputProps = {
+        Component: 'Hello',
+        router: {
+          asPath: '/path',
+          isFallback: true,
+        },
+        pageProps: {
+          foo: 'bar',
+        },
+      }
+
+      const resultProps = {
+        Component: 'Hello',
+        currentPath: '/path',
+        isFallback: true,
+        pageProps: {
+          foo: 'bar',
+        },
+      }
+
+      // NOTE: type casting is used to silence TS error
+      // as we do not provide all Next app props
+      // but only that props our hook use
+      const bodiesProps = createBodiesProps(inputProps as any)
+      expect(bodiesProps).toMatchObject(resultProps)
     })
   })
 })

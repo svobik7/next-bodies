@@ -25,11 +25,7 @@ export default function Dialog(props: DialogProps) {
             isSlaveBody: true,
           })}
         <div className={classes.blockBottom}>
-          <button
-            role="button"
-            className={classes.btnClose}
-            onClick={() => router.back()}
-          >
+          <button className={classes.btnClose} onClick={() => router.back()}>
             Close
           </button>
         </div>
