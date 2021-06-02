@@ -1,14 +1,39 @@
-import { AppProps as NextAppProps } from 'next/app'
-import React, { ReactNode, useEffect, useRef } from 'react'
+import { AppProps } from 'next/app'
+import React, { ComponentType, ReactElement, useEffect, useRef } from 'react'
 
-export type AppBodyLayout = (page: ReactNode) => ReactNode
+/**
+ * Defines how body layout works
+ */
+export type BodyLayout = (page: ReactElement) => ReactElement
 
-export type AppBodyComponent = NextAppProps['Component'] & {
-  getLayout?: (page: ReactNode) => ReactNode
+/**
+ * Defines optional layout getter on page component
+ */
+export type BodyComponent = ComponentType<any> & {
+  getLayout?: BodyLayout
 }
 
-export type AppWithBodiesProps = NextAppProps & {
-  Component: AppBodyComponent
+/**
+ * Defines which props is required for using useBodies hook
+ */
+export type BodiesProps = {
+  Component: BodyComponent
+  currentPath: string
+  isFallback: boolean
+  pageProps: any
+}
+
+/**
+ * Creates bodies props from Next.js app props
+ * @param props
+ */
+export function createBodiesProps(props: AppProps): BodiesProps {
+  return {
+    Component: props.Component,
+    currentPath: props.router.asPath,
+    isFallback: props.router.isFallback,
+    pageProps: props.pageProps,
+  }
 }
 
 /**
@@ -25,13 +50,13 @@ export type AppWithBodiesProps = NextAppProps & {
  *
  * @param renderAsSlave indicates if props['Component'] is allowed to render as slaveBody
  */
-export function useBodies(props: AppWithBodiesProps, renderAsSlave: boolean) {
-  const { Component: CurrentBody, pageProps, router } = props
+export function useBodies(props: BodiesProps, renderAsSlave: boolean) {
+  const { Component: CurrentBody, pageProps, currentPath, isFallback } = props
 
   // cache body components to keep layout stale
   // while CurrentBody is rendered as slave (in dialog)
-  const mainBody = useRef<ReactNode>(null)
-  const slaveBody = useRef<ReactNode>(null)
+  const mainBody = useRef<ReactElement | null>(null)
+  const slaveBody = useRef<ReactElement | null>(null)
 
   // cache component's paths to prevent navigation back actions
   // from rendering the same component in both mainBody (in layout) and slaveBody (in dialog)
@@ -41,8 +66,8 @@ export function useBodies(props: AppWithBodiesProps, renderAsSlave: boolean) {
   // keep track of static page hydrate to prevent
   // rendering page in main body on first render when query is empty
   // while the same page is rendered in slave body when query is hydrated
-  const isPathHydrated = !router.asPath.match(/\[.*\]/)
-  const mainPathHydrated = useRef<ReactNode>(isPathHydrated)
+  const isPathHydrated = !currentPath.match(/\[.*\]/)
+  const mainPathHydrated = useRef<boolean>(isPathHydrated)
 
   // cache indicator which prevents CurrentBody
   // from being rendered as slaveBody (in dialog)
@@ -51,7 +76,7 @@ export function useBodies(props: AppWithBodiesProps, renderAsSlave: boolean) {
   // indicates if current router path has already been cached as main
   // this is true usually when user closes dialog
   const isMainPath =
-    !mainPathHydrated.current || mainPath.current === router.asPath
+    !mainPathHydrated.current || mainPath.current === currentPath
 
   // clear slave cache when CurrentBody is not allowed to render as slave
   // or when main cache contains the same component as CurrentBody
@@ -66,33 +91,37 @@ export function useBodies(props: AppWithBodiesProps, renderAsSlave: boolean) {
   // current render is allowed as slave and the same detail has not been rendered as main component already
   if (renderAsSlave && mainBody.current && !isMainPath) {
     slaveBody.current = <CurrentBody {...pageProps} />
-    slavePath.current = router.asPath
+    slavePath.current = currentPath
 
     useSlave.current = true
   }
 
+  // indicates if cached main component
+  // should be invalidated and re-rendered again
+  const shouldInvalidateMain = !isMainPath && !renderAsSlave
+
   // creates new main component only when is missing or when render is not allowed as slave
   // this is true on the first render or when navigating between non-dialog pages
-  if (!mainBody.current || !renderAsSlave) {
+  if (!mainBody.current || shouldInvalidateMain) {
     const getLayout = CurrentBody.getLayout || ((page) => page)
 
     mainBody.current = getLayout(<CurrentBody {...pageProps} />)
-    mainPath.current = router.asPath
+    mainPath.current = currentPath
   }
 
   // clear cache when fallback render was done (getStaticProps)
   // this makes sure that fallback will be replaced on second render (once data are ready)
   useEffect(() => {
-    if (router.isFallback && mainPath.current === router.asPath) {
+    if (isFallback && mainPath.current === currentPath) {
       mainBody.current = null
     }
 
-    if (router.isFallback && slavePath.current === router.asPath) {
+    if (isFallback && slavePath.current === currentPath) {
       slaveBody.current = null
     }
 
     if (!mainPathHydrated.current && isPathHydrated) {
-      mainPath.current = router.asPath
+      mainPath.current = currentPath
       mainPathHydrated.current = true
     }
   })

@@ -32,68 +32,75 @@ Add the package to your project dependencies
 
 ### How to use it
 
-Add the hook call to your `_app.ts` and specify which page (route) can be rendered in overlay (as a slave):
+Add the hook call to your `_app.ts` and specify which page (route) can be rendered in modal (as a slave). In the following example, the main page component is rendered as usual while the slave page component is rendered in the custom dialog (modal) component.
 
-```ts
-const renderAsSlave = router.pathname === '/detail'
+```tsx
+import { AppProps } from 'next/app'
+import { createBodiesProps, useBodies } from 'next-bodies'
+import Dialog from '../components/dialog/dialog'
 
-const {
+/**
+ * Defines custom app behavior
+ * @param props
+ */
+function MyApp(props: AppProps) {
+  const { router } = props
+
+  // indicates if body component can be rendered as slave component (in dialog)
+  // you can use your custom logic here (route parsing, query params, ...)
+  const renderAsSlave = router.pathname === '/detail'
+  const bodiesProps = createBodiesProps(props)
+
+  // use custom app component manager
+  // to be able to render details in dialog while keeping main layout stale
+  const {
     mainBody,
     slaveBody: dialogBody,
     useSlave: useDialog,
-  } = useBodies(props, renderAsSlave)
+  } = useBodies(bodiesProps, renderAsSlave)
 
-```
-
-To satisfy Typescript use following props types:
-
-```ts
-import { AppWithBodiesProps } from 'next-bodies'
-
-function MyApp(props: AppWithBodiesProps) {
-  // hook call and body rendering
-}
-```
-
-Add body components rendering. In the following example, the main page component is rendered as usual while the slave page component is rendered in the custom dialog component.
-
-```ts
-
-return (
+  return (
     <>
       {mainBody}
 
       <Dialog isVisible={useDialog}>{dialogBody}</Dialog>
     </>
   )
+}
+
+export default MyApp
 ```
+
+Alternatively you do not have to use `createBodiesProps` instead you can provide `Component`, `currentPath`, `isFallback` and `pageProps` explicitly. See `BodiesProps` type.
+
+> NOTE: Keep in mind that `Dialog` component in the example above is not part of `next-bodies` package. It can be replace with any of your custom overlay/modal component.
 
 ## 2. API
 
 ```ts
 const {
-    mainBody,
-    slaveBody: dialogBody,
-    useSlave: useDialog,
-  } = useBodies(props, renderAsSlave)
+  mainBody,
+  slaveBody: dialogBody,
+  useSlave: useDialog,
+} = useBodies(props, renderAsSlave)
 ```
 
 ### Params
 
-- *props* - your application props
-- *renderAsSlave* - indicates if the current page component is allowed to render as a slave (usually based on current route)
+- _props_ - your application props
+- _renderAsSlave_ - indicates if the current page component is allowed to render as a slave (usually based on current route)
 
 ### API
 
-- *mainBody* - always contains the first page component to render or any following page component which is not allowed to render as a slave
-- *slaveBody* - contains the page component which is allowed to render as a slave only when mainBody component already exists
-- *useSlave* - indicates if slaveBody should be rendered in the current render cycle
+- _mainBody_ - always contains the first page component to render or any following page component which is not allowed to render as a slave
+- _slaveBody_ - contains the page component which is allowed to render as a slave only when mainBody component already exists
+- _useSlave_ - indicates if slaveBody should be rendered in the current render cycle
 
 ## 3. Layouts
 
 Each page component can specify a custom layout which will be then automatically attached/detached during body rendering.
 
-```ts
+```tsx
 const IndexPage = () => {
   // ...
 }
