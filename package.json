@@ -1,6 +1,6 @@
 {
   "name": "next-bodies",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Next.js utility to orchestrate main and slave body of app",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -12,6 +12,19 @@
   "repository": "https://github.com/svobik7/next-bodies",
   "author": "Jirka Svoboda <svobik7@gmail.com>",
   "license": "MIT",
+  "keywords": [
+    "react",
+    "next",
+    "nextjs",
+    "next.js",
+    "contextual",
+    "modal",
+    "dialog",
+    "layout",
+    "overlay",
+    "pages",
+    "navigation"
+  ],
   "private": false,
   "scripts": {
     "prepublish": "yarn clean && yarn build && yarn test",
