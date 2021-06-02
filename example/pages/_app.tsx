@@ -12,7 +12,7 @@ function MyApp(props: AppProps) {
 
   // indicates if body component can be rendered as slave component (in dialog)
   // you can use your custom logic here (route parsing, query params, ...)
-  const renderAsSlave = router.pathname === '/detail'
+  const renderAsSlave = router.pathname === '/posts/[id]'
   const bodiesProps = createBodiesProps(props)
 
   // use custom app component manager
