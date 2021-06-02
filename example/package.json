@@ -3,9 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "yarn build-package && next",
-    "build": "yarn build-package && yarn build-example",
-    "build-package": "yarn --cwd ./.. install",
-    "build-example": "yarn --cwd . install && next build",
+    "preinstall": "yarn --cwd ./.. install",
+    "build": "next build",
     "start": "next start",
     "type-check": "tsc"
   },
