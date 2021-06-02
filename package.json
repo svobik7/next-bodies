@@ -1,6 +1,6 @@
 {
   "name": "next-bodies",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Next.js utility to orchestrate main and slave body of app",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -21,7 +21,7 @@
     "test": "jest",
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watch",
-    "publish:canary": "publish --tag canary"
+    "publish:canary": "yarn publish --tag canary"
   },
   "devDependencies": {
     "@testing-library/react": "^11.2.7",
