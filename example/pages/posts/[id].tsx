@@ -5,7 +5,7 @@ import { ReactNode } from 'react'
 import classes from 'styles/pages/post.module.scss'
 import Layout from '../../components/layout/layout'
 
-type Post = { id: number; title: string }
+type Post = { id: string; title: string }
 
 type PostPageProps = InferGetStaticPropsType<typeof getStaticProps> & {
   isSlaveBody: boolean
@@ -68,12 +68,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
   // You can use any data fetching library
   const post: Post = await new Promise((resolve) =>
     setTimeout(() => {
-      resolve({ id: Number(id), title: `Post Title ${id}` })
+      resolve({ id: String(id), title: `Post Title ${id}` })
     }, 3000),
   )
 
-  // By returning { props: { posts } }, the Blog component
-  // will receive `posts` as a prop at build time
+  // By returning { props: { post } }, the page component
+  // will receive `post` as a prop at build time
   return {
     props: {
       post,
@@ -84,11 +84,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
 // This function gets called at build time
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
-    // Only `/posts/1` and `/posts/2` are generated at build time
-    paths: [],
+    // Only `/posts/1` is generated at build time
+    paths: [{ params: { id: '1' } }],
     // Enable statically generating additional pages
-    // For example: `/posts/3`
+    // For example: `/posts/2`
     fallback: true,
+    // fallback: 'blocking',
   }
 }
 
