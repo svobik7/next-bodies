@@ -16,7 +16,6 @@ export default function Layout(props: LayoutProps) {
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
-
       <header className={classes.header}>
         Navigation:
         <nav>
@@ -26,24 +25,29 @@ export default function Layout(props: LayoutProps) {
           <Link href="/about">
             <a>About</a>
           </Link>
-          <Link href="/detail">
-            <a>Detail</a>
+          <Link href="/posts/1">
+            <a>Post 1</a>
+          </Link>
+          <Link href="/posts/2">
+            <a>Post 2</a>
           </Link>
         </nav>
       </header>
-
       {children}
-
       <footer className={classes.footer}>
         <span>Elements border-colors:</span>
         <ul>
-          <li data-type="page-index">Index Page</li>
-          <li data-type="page-detail">Detail Page</li>
-          <li data-type="page-about">About Page</li>
-          <li data-type="cmp-layout">Layout Component</li>
-          <li data-type="cmp-dialog">Dialog Component</li>
+          <li data-type="cmp-layout">Component Layout</li>
+          <li data-type="cmp-dialog">Component Dialog</li>
+          <li data-type="page-index">Page Index</li>
+          <li data-type="page-about">Page About</li>
+          <li data-type="page-post">Page Post</li>
         </ul>
       </footer>
+      Feel free to explore the code:{' '}
+      <a href="https://github.com/svobik7/next-bodies">
+        https://github.com/svobik7/next-bodies
+      </a>
     </div>
   )
 }

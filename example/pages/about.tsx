@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
-import Layout from '../components/layout/layout'
 import classes from 'styles/pages/about.module.scss'
+import Layout from '../components/layout/layout'
 
 const AboutPage = () => {
   console.count('Rendering ABOUT')
@@ -9,12 +9,12 @@ const AboutPage = () => {
       <h1>About Body</h1>
       <p>
         This body component is always rendered as `mainBody` wrapped in layout
-        component. It is never rendered in dialog because this example strictly
-        defines that only detail page can be rendered as slave body.
+        component. It is never rendered in modal because this example strictly
+        defines that only post page can be rendered in modal.
         <code>
-          // See _app.ts file:
+          {'// See _app.ts file:'}
           <br />
-          const renderAsSlave = router.pathname === '/detail'
+          {"const renderAsSlave = router.pathname === '/posts/[id]'"}
         </code>
       </p>
     </div>

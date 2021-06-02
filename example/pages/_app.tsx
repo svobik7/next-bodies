@@ -10,13 +10,14 @@ import Dialog from '../components/dialog/dialog'
 function MyApp(props: AppProps) {
   const { router } = props
 
-  // indicates if body component can be rendered as slave component (in dialog)
+  // indicates if page can be rendered as slave body component (in modal)
   // you can use your custom logic here (route parsing, query params, ...)
-  const renderAsSlave = router.pathname === '/detail'
+  const renderAsSlave = router.pathname === '/posts/[id]'
   const bodiesProps = createBodiesProps(props)
 
   // use custom app component manager
-  // to be able to render details in dialog while keeping main layout stale
+  // to be able to render pages in modals
+  // while keeping main layout stale
   const {
     mainBody,
     slaveBody: dialogBody,

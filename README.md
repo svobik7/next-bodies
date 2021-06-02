@@ -1,10 +1,10 @@
 # next-bodies
 
-Next.js utility for rendering multiple page components at once based on router pathname while keeping the layout stale. This behavior is also know as contextual modal routing.
+Next.js utility for rendering multiple page components at once based on router pathname while keeping the layout stale. This behavior is also know as contextual modal routing, route as modal. Supports Next.js 10 and dynamic routes (getStaticProps).
 
 - Example can be found here: https://next-bodies.vercel.app
 
-The most common use case would be to render the next (slave) page in an overlay (modal, dialog) while keeping the current (main) page unchanged and visible once the user clicks the page link.
+The most common use case would be to render the next (slave) page in an modal (overlay, dialog) while keeping the current (main) page unchanged and visible, once the user clicks the page link. The same approach is used on Reddit or Instagram posts.
 
 Each page component can specify a custom layout in which the page will be wrapped when rendered as the main page.
 
@@ -12,13 +12,14 @@ Layouts in `next-bodies` package follow the [Adam Wathan Persistent Layouts Patt
 
 Thank you Adam for your clarification 👍
 
-Using the `next-bodies` approach for orchestrate page dialogs includes:
+Using the `next-bodies` approach for orchestrate page modals includes:
 
 1. No need to restore scroll positions after back navigation, as the main page is not removed from DOM
 2. No unnecessary re-renders of the main page after the slave page is shown
 3. No unnecessary re-renders of the main page when router pathname did not change
 4. No need to manual opening the overlays - overlays are opened based on router change
 5. No need to manual removing the layout when rendering the page in a dialog
+6. Next.js v10 and dynamic routes (`getStaticProps`) support
 
 > Next.js says: On many popular social media, opening a post will update the URL but won't trigger a navigation and will instead display the content inside a modal. This behavior ensures the user won't lose the current UI context (scroll position). The URL still reflect the post's actual page location and any refresh will bring the user there. This behavior ensures great UX without neglecting SEO.
 
@@ -48,13 +49,14 @@ import Dialog from '../components/dialog/dialog'
 function MyApp(props: AppProps) {
   const { router } = props
 
-  // indicates if body component can be rendered as slave component (in dialog)
+  // indicates if page can be rendered as slave body component (in modal)
   // you can use your custom logic here (route parsing, query params, ...)
-  const renderAsSlave = router.pathname === '/detail'
+  const renderAsSlave = router.pathname === '/posts/[id]'
   const bodiesProps = createBodiesProps(props)
 
   // use custom app component manager
-  // to be able to render details in dialog while keeping main layout stale
+  // to be able to render pages in modals
+  // while keeping main layout stale
   const {
     mainBody,
     slaveBody: dialogBody,
