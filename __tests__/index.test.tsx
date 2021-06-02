@@ -82,7 +82,7 @@ describe('next-bodies', () => {
         Component: function SlaveBody() {
           return <div>Slave text</div>
         },
-        currentPath: '/detail',
+        currentPath: '/post',
         isFallback: false,
         pageProps: {},
       }
@@ -125,7 +125,7 @@ describe('next-bodies', () => {
 
       const alreadyHydratedProps: BodiesProps = {
         ...notHydratedProps,
-        currentPath: '/detail-slug',
+        currentPath: '/post-slug',
         isFallback: false,
         pageProps: {
           ts: 100,

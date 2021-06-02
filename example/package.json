@@ -2,8 +2,8 @@
   "name": "with-typescript",
   "version": "1.0.0",
   "scripts": {
-    "dev": "yarn build-package && next",
     "preinstall": "yarn --cwd ./.. install",
+    "dev": "next",
     "build": "next build",
     "start": "next start",
     "type-check": "tsc"

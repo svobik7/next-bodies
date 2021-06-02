@@ -88,7 +88,7 @@ export function useBodies(props: BodiesProps, renderAsSlave: boolean) {
   }
 
   // creates new slave component only when main component already exists,
-  // current render is allowed as slave and the same detail has not been rendered as main component already
+  // current render is allowed as slave and the same current path is not main path
   if (renderAsSlave && mainBody.current && !isMainPath) {
     slaveBody.current = <CurrentBody {...pageProps} />
     slavePath.current = currentPath
