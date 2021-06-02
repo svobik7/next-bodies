@@ -2,7 +2,7 @@
 
 Next.js utility for rendering multiple page components at once based on router pathname while keeping the layout stale. This behavior is also know as contextual modal routing.
 
-- Example can be found here: https://next-bodies-git-dev-jirka-svoboda.vercel.app
+- Example can be found here: https://next-bodies.vercel.app
 
 The most common use case would be to render the next (slave) page in an overlay (modal, dialog) while keeping the current (main) page unchanged and visible once the user clicks the page link.
 
