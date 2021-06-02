@@ -71,7 +71,7 @@ function MyApp(props: AppProps) {
 export default MyApp
 ```
 
-Alternatively you do not have to use `createBodiesProps` instead you can provide `Component`, `currentPath`, `isFallback` and `pageProps` explicitly. See `BodiesProps` type.
+Alternatively you do not have to use `createBodiesProps` instead you can provide `Component`, `currentPath`, `isFallback` and `pageProps` explicitly. See [BodiesProps type](#BodiesProps).
 
 > NOTE: Keep in mind that `Dialog` component in the example above is not part of `next-bodies` package. It can be replace with any of your custom overlay/modal component.
 
@@ -87,7 +87,7 @@ const {
 
 ### Params
 
-- _props_ - your application props
+- _props_ - see [BodiesProps type](#BodiesProps)
 - _renderAsSlave_ - indicates if the current page component is allowed to render as a slave (usually based on current route)
 
 ### API
@@ -95,6 +95,17 @@ const {
 - _mainBody_ - always contains the first page component to render or any following page component which is not allowed to render as a slave
 - _slaveBody_ - contains the page component which is allowed to render as a slave only when mainBody component already exists
 - _useSlave_ - indicates if slaveBody should be rendered in the current render cycle
+
+### BodiesProps
+
+```ts
+{
+  Component: BodyComponent,
+  currentPath: string,
+  isFallback: boolean,
+  pageProps: any
+}
+```
 
 ## 3. Layouts
 
