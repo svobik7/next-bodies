@@ -1,7 +1,7 @@
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next'
 import { useRouter } from 'next/dist/client/router'
 import Head from 'next/head'
-import { ReactNode } from 'react'
+import { ReactElement } from 'react'
 import classes from 'styles/pages/post.module.scss'
 import Layout from '../../components/layout/layout'
 
@@ -50,7 +50,7 @@ const PostPage = (props: PostPageProps) => {
   )
 }
 
-PostPage.getLayout = function getLayout(page: ReactNode) {
+PostPage.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>
 }
 

@@ -9,6 +9,8 @@ type DialogProps = PropsWithChildren<{
 export default function Dialog(props: DialogProps) {
   const { children, isVisible } = props
 
+  console.count('Rendering DIALOG')
+
   const router = useRouter()
 
   if (!isVisible) return null
