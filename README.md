@@ -113,14 +113,14 @@ const {
 
 ## 3. Layouts
 
-Each page component can specify a custom layout which will be then automatically attached/detached during body rendering.
+Each page component can specify a custom layout which will be then automatically attached/detached during body rendering. Current page props are pushed as second argument - this is useful for accessing `getStaticProps` data in layout function.
 
 ```tsx
 const IndexPage = () => {
   // ...
 }
 
-IndexPage.getLayout = function getLayout(page: ReactNode) {
+IndexPage.getLayout = function getLayout(page: ReactNode, pageProps: any) {
   return <Layout>{page}</Layout>
 }
 
@@ -130,5 +130,5 @@ export default IndexPage
 When no page layout is specified then blank will be used:
 
 ```ts
-const getLayout = CurrentBody.getLayout || ((page) => page)
+const getLayout = CurrentBody.getLayout || ((page, pageProps) => page)
 ```

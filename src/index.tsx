@@ -4,7 +4,7 @@ import React, { ComponentType, ReactElement, useEffect, useRef } from 'react'
 /**
  * Defines how body layout works
  */
-export type BodyLayout = (page: ReactElement) => ReactElement
+export type BodyLayout = (page: ReactElement, pageProps?: any) => ReactElement
 
 /**
  * Defines optional layout getter on page component
@@ -105,7 +105,7 @@ export function useBodies(props: BodiesProps, renderAsSlave: boolean) {
   if (!mainBody.current || shouldInvalidateMain) {
     const getLayout = CurrentBody.getLayout || ((page) => page)
 
-    mainBody.current = getLayout(<CurrentBody {...pageProps} />)
+    mainBody.current = getLayout(<CurrentBody {...pageProps} />, pageProps)
     mainPath.current = currentPath
   }
 

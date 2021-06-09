@@ -9,6 +9,9 @@ type LayoutProps = PropsWithChildren<{
 
 export default function Layout(props: LayoutProps) {
   const { children, title = 'Next Bodies 👋' } = props
+
+  console.count('Rendering LAYOUT')
+
   return (
     <div className={classes.root}>
       <Head>
