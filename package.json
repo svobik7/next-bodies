@@ -1,6 +1,6 @@
 {
   "name": "next-bodies",
-  "version": "1.0.2-canary",
+  "version": "1.0.3",
   "description": "Next.js utility to orchestrate main and slave body of app",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -70,7 +70,7 @@
     "typescript": "^4.3.2"
   },
   "peerDependencies": {
-    "next": "^10.0.0",
+    "next": "^10.0.0 || ^11.0.0",
     "react": "^17.0.0"
   },
   "lint-staged": {
